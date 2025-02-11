@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Weather Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <!-- Leaflet CSS and JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+    <script>
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition);
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        function showPosition(position) {
+            window.location.href = `/?lat=${position.coords.latitude}&lon=${position.coords.longitude}`;
+        }
+    </script>
+</head>
+<body onload="getLocation()" class="bg-light">
+    <!-- Add a search form at the top of the page -->
+<div class="container mt-4">
+    <form action="/" method="get">
+        <div class="input-group">
+            <input type="text" name="city" class="form-control" placeholder="Enter City Name" required>
+            <button type="submit" class="btn btn-primary">Search</button>
+        </div>
+    </form>
+</div>
+
+
+    <div class="container mt-5">
+        <h1 class="text-center">Live Weather Dashboard</h1>
+        <div class="card-body text-center">  
+        <p>Your saved city: {{ request.session.city }}</p>
+        </div>
+
+
+        {% if weather.main %}
+            <div class="card mt-4">
+                <div class="card-body text-center">
+                    <div class="weather-info">
+                        <h3>Current Weather</h3>
+                        <p><strong>{{ weather.name }}</strong>, {{ weather.sys.country }}</p>
+                        <p><strong>{{ weather.main.temp }}°C</strong></p>
+                        <p><img src="http://openweathermap.org/img/wn/{{ weather.weather.0.icon }}@2x.png" alt="{{ weather.weather.0.description }}" /></p>
+                        <p>{{ weather.weather.0.description | title }}</p>
+                    </div>                    
+                </div>
+            </div>
+            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+            <div class="card-body text-center">
+            <h3 class="mt-4">Weekly Forecast</h3>
+            </div>       
+<div class="row">
+    {% for item in forecast.list|slice:":12" %}
+        <div class="col-md-2">
+            <div class="card mt-3">
+                <div class="card-body text-center">
+                    <p><strong>{{ item.dt_txt | slice:":10" }}</strong></p>
+                    <p>{{ item.main.temp }}°C</p>
+                    <p>{{ item.weather.0.description | title }}</p>
+                    <p>Wind Speed: {{ item.wind.speed }} m/s</p>
+                    <p>Pressure: {{ item.main.pressure }} hPa</p>
+                    <p>Humidity: {{ item.main.humidity }}%</p>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+            <!-- Add this below the forecast section -->
+<canvas id="forecastChart" width="400" height="200"></canvas>
+<script>
+    var ctx = document.getElementById('forecastChart').getContext('2d');
+    var forecastLabels = [];
+    var forecastTemps = [];
+
+    {% for item in forecast.list %}
+        forecastLabels.push("{{ item.dt_txt | slice:":10" }}");
+        forecastTemps.push({{ item.main.temp }});
+    {% endfor %}
+
+    var forecastChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: forecastLabels,
+            datasets: [{
+                label: 'Temperature (°C)',
+                data: forecastTemps,
+                fill: false,
+                borderColor: 'rgba(75, 192, 192, 1)',
+                tension: 0.1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Date'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Temperature (°C)'
+                    }
+                }
+            }
+        });
+</script>
+       <div class="card-body text-center">
+            <h3 class="mt-4">Weather Tip</h3>
+            <p class="alert alert-info">
+                {% if weather.weather.0.main == "Rain" %}
+                    Don't forget your umbrella ☔!
+                {% elif weather.weather.0.main == "Clear" %}
+                    A great day for outdoor activities! 🌞
+                {% elif weather.weather.0.main == "Clouds" %}
+                    You might need a light jacket. ☁️
+                {% elif weather.weather.0.main == "Snow" %}
+                    Stay warm! 🧥❄️
+                {% else %}
+                    Stay safe and check the weather updates.
+                {% endif %}
+            </p>
+        </div>
+        {% else %}
+            <p class="text-center">Fetching weather data...</p>
+        {% endif %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Add this below the weather info -->
+<div id="map" style="height: 400px; margin-top: 20px;"></div>
+
+<script>
+    var map = L.map('map').setView([{{ weather.coord.lat }}, {{ weather.coord.lon }}], 13);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    // Display city name in the marker popup
+    var cityName = "{{ weather.name }}";
+    L.marker([{{ weather.coord.lat }}, {{ weather.coord.lon }}]).addTo(map)
+        .bindPopup(cityName)
+        .openPopup();
+</script>
+
+
+</body>
+</html>
