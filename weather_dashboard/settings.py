@@ -119,3 +119,5 @@ CACHES = {
     }
 }
 
+# Add this at the bottom of settings.py
+LOGIN_URL = '/login/'
