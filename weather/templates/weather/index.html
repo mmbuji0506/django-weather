@@ -62,6 +62,44 @@
         footer a:hover {
             color: #ffdd57;
         }
+
+        /* Dark mode overrides */
+    .dark-mode {
+        background: linear-gradient(135deg, #2d2d2d, #1a1a1a);
+    }
+
+    .dark-mode .navbar {
+        background: rgba(0, 0, 0, 0.9) !important;
+    }
+
+    .dark-mode .navbar-brand,
+    .dark-mode .nav-link {
+        color: #fff !important;
+    }
+
+    .dark-mode .nav-link:hover {
+        color: #6a11cb !important;
+    }
+
+    .dark-mode .card,
+    .dark-mode .chart-container {
+        background: rgba(0, 0, 0, 0.8);
+        color: #fff;
+    }
+
+    .dark-mode .card .card-body {
+        color: #fff;
+    }
+
+    .dark-mode footer {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .dark-mode .alert-info {
+        background-color: #1a237e;
+        border-color: #1a237e;
+        color: #fff;
+    }
     </style>
 </head>
 <body onload="getLocation()">
@@ -89,6 +127,13 @@
                             <a class="nav-link" href="/login/"><i class="fas fa-sign-in-alt"></i> Login</a>
                         </li>
                     {% endif %}
+                    <!-- Add this to your navbar (inside the <ul class="navbar-nav ms-auto">) -->
+<li class="nav-item">
+    <button class="btn btn-link nav-link" onclick="toggleDarkMode()" id="theme-toggle">
+        <i id="theme-icon" class="fas fa-moon"></i>
+        <span id="theme-text">Dark Mode</span>
+    </button>
+</li>
                 </ul>
             </div>
         </div>
@@ -343,5 +388,34 @@
             }
         });
     </script>
+    <!-- Add this JavaScript before </body> -->
+<script>
+    function toggleDarkMode() {
+        const body = document.body;
+        body.classList.toggle('dark-mode');
+        const isDarkMode = body.classList.contains('dark-mode');
+        localStorage.setItem('darkMode', isDarkMode);
+        
+        const icon = document.getElementById('theme-icon');
+        const text = document.getElementById('theme-text');
+        if (isDarkMode) {
+            icon.classList.replace('fa-moon', 'fa-sun');
+            text.textContent = ' Light Mode';
+        } else {
+            icon.classList.replace('fa-sun', 'fa-moon');
+            text.textContent = ' Dark Mode';
+        }
+    }
+
+    // Initialize theme on load
+    document.addEventListener('DOMContentLoaded', function() {
+        const isDarkMode = localStorage.getItem('darkMode') === 'true';
+        if (isDarkMode) {
+            document.body.classList.add('dark-mode');
+            document.getElementById('theme-icon').classList.replace('fa-moon', 'fa-sun');
+            document.getElementById('theme-text').textContent = ' Light Mode';
+        }
+    });
+</script>
 </body>
 </html>
