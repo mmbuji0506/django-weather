@@ -50,8 +50,6 @@ Ensure you have the following installed:
    ```
 5. Apply migrations:
    ```bash
-   python manage.py makemigrations
-   ```
    python manage.py migrate
    ```
 7. Create a superuser (optional, for admin access):
