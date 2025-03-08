@@ -12,6 +12,9 @@ A live weather dashboard built with Django that displays real-time weather data,
 - **Real-Time Updates**: Weather data is updated dynamically for accuracy.
 - **Dark Mode Support**: Allows users to switch between light and dark mode.
 - **Mobile-Friendly Design**: Fully responsive for seamless usage on various devices.
+- **Extreme Weather Alerts**: Notifies users of storms, heatwaves, heavy rainfall, and other severe weather conditions.
+- **Text-to-Speech Weather Report**: Allows users to hear the weather report for their selected location.
+- **Travel Mode**: Suggests the best travel days based on weather forecasts to help users plan trips effectively.
 
 ## Technologies Used
 - **Backend**: Django, Django REST Framework
@@ -44,19 +47,19 @@ Ensure you have the following installed:
    ```
 4. Set up environment variables (create a `.env` file and add your API keys):
    ```
-   OPENWEATHER_API_KEY="bd5e378503939ddaee76f12ad7a97608"
-   SECRET_KEY='django-insecure-ps%#-oo5(c-5l(!hk)^&n%0zl(gcvc2j51j4lgi4r=gs73_*!x'
+   OPENWEATHER_API_KEY="your_api_key_here"
+   SECRET_KEY='your_secret_key_here'
    DEBUG=True
    ```
 5. Apply migrations:
    ```bash
    python manage.py migrate
    ```
-7. Create a superuser (optional, for admin access):
+6. Create a superuser (optional, for admin access):
    ```bash
    python manage.py createsuperuser
    ```
-8. Run the server:
+7. Run the server:
    ```bash
    python manage.py runserver
    ```
@@ -66,6 +69,9 @@ Ensure you have the following installed:
 - Search for a city to view its weather details.
 - Register/login to save favorite cities.
 - Explore the interactive map to visualize locations.
+- Receive alerts for extreme weather conditions.
+- Use the text-to-speech feature to listen to the weather report.
+- Enable travel mode to find the best travel days based on weather predictions.
 
 ## Contribution
 Contributions are welcome! To contribute:
@@ -79,4 +85,4 @@ Contributions are welcome! To contribute:
 This project is licensed under the MIT License.
 
 ## Contact
-For any inquiries or support, call +255 716 399 739/747 330 049 or reach out to mmbujijosameneza@gmail.com or visit the GitHub repository [here](https://github.com/mmbuji0506/weather-dashboard).
+For any inquiries or support, call +255 716 399 739 / +255 747 330 049 or reach out to mmbujijosameneza@gmail.com or visit the GitHub repository [here](https://github.com/mmbuji0506/weather-dashboard).

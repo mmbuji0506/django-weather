@@ -50,6 +50,19 @@
             color: #ffdd57;
         }
 
+        #speak-weather {
+            color: white; /* Match navbar text color */
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: background 0.3s ease;
+        }
+        #speak-weather:hover {
+            background: rgba(255, 255, 255, 0.2); /* Light hover effect */
+            text-decoration: none;
+        }
+        
+        
+
         /* Dark mode overrides */
         .dark-mode {
             background: linear-gradient(135deg, #2d2d2d, #1a1a1a);
@@ -98,6 +111,11 @@
                         <li class="nav-item">
                             <a class="nav-link" href="/add-favorite-city/"><i class="fas fa-plus"></i> Add City</a>
                         </li>
+                        <li class="nav-item">
+                            <a href="#" id="speak-weather" class="nav-link">
+                                🔊 Hear Weather Report
+                            </a>
+                        </li>                        
                         <li class="nav-item">
                             <a class="nav-link" href="/logout/"><i class="fas fa-sign-out-alt"></i> Logout</a>
                         </li>
@@ -179,6 +197,29 @@
                 document.getElementById('theme-text').textContent = ' Light Mode';
             }
         });
+
+        function speakWeather() {
+            let weatherText = document.getElementById("weather-report").innerText;
+        
+            if ('speechSynthesis' in window) {
+                let speech = new SpeechSynthesisUtterance(weatherText);
+                speech.lang = "en-US";  // Set language
+                speech.rate = 1.0;  // Speed of speech
+                speech.pitch = 1.0;  // Pitch of voice
+                window.speechSynthesis.speak(speech);
+            } else {
+                alert("Text-to-Speech is not supported in this browser.");
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            document.getElementById("speak-weather").addEventListener("click", function(event) {
+                event.preventDefault(); // Prevent the page from refreshing
+                speakWeather();
+            });
+        });
+        
+        
     </script>
 </body>
 </html>

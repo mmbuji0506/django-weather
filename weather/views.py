@@ -5,10 +5,15 @@ from django.contrib.auth.decorators import login_required
 from .models import FavoriteCity
 import requests
 from django.core.cache import cache
+from django.http import JsonResponse
+
+
+API_KEY = "bd5e378503939ddaee76f12ad7a97608"
+BASE_URL = "https://api.openweathermap.org/data/3.0/onecall"
 
 # Index request
 def index(request):
-    api_key = "bd5e378503939ddaee76f12ad7a97608"  # Replace with your API key
+    api_key = "bd5e378503939ddaee76f12ad7a97608"
     lat = request.GET.get('lat')
     lon = request.GET.get('lon')
     city = request.GET.get('city')
@@ -121,3 +126,45 @@ def register_view(request):
     else:
         form = UserCreationForm()
     return render(request, 'weather/register.html', {'form': form})
+
+def get_weather_alerts(request):
+    lat = request.GET.get('lat')
+    lon = request.GET.get('lon')
+
+    if not lat or not lon:
+        return JsonResponse({"error": "Latitude and Longitude required"}, status=400)
+
+    url = f"{BASE_URL}?lat={lat}&lon={lon}&appid={API_KEY}&units=metric&exclude=minutely,hourly,daily"
+    response = requests.get(url)
+    data = response.json()
+
+    if "alerts" in data:
+        return JsonResponse({"alerts": data["alerts"]})
+    
+    return JsonResponse({"message": "No extreme weather alerts."})
+
+def get_travel_recommendations(request):
+    lat = request.GET.get('lat')
+    lon = request.GET.get('lon')
+
+    if not lat or not lon:
+        return JsonResponse({"error": "Latitude and Longitude required"}, status=400)
+
+    url = f"{BASE_URL}?lat={lat}&lon={lon}&appid={API_KEY}&units=metric&exclude=minutely,hourly"
+    response = requests.get(url)
+    data = response.json()
+
+    if "daily" not in data:
+        return JsonResponse({"error": "Weather data not found"}, status=500)
+
+    # Analyze forecast and find best days for travel
+    recommendations = []
+    for day in data["daily"]:
+        temp = day["temp"]["day"]
+        condition = day["weather"][0]["main"]
+        dt = day["dt"]  # Timestamp of the day
+
+        if temp > 15 and temp < 30 and condition not in ["Rain", "Snow", "Thunderstorm"]:
+            recommendations.append({"date": dt, "temp": temp, "condition": condition})
+
+    return JsonResponse({"recommendations": recommendations})

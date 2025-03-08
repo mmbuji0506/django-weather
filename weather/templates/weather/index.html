@@ -63,6 +63,19 @@
             color: #ffdd57;
         }
 
+        #speak-weather {
+            color: white; /* Match navbar text color */
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: background 0.3s ease;
+        }
+        #speak-weather:hover {
+            background: rgba(255, 255, 255, 0.2); /* Light hover effect */
+            text-decoration: none;
+        }
+        
+        
+
         /* Dark mode overrides */
     .dark-mode {
         background: linear-gradient(135deg, #2d2d2d, #1a1a1a);
@@ -100,9 +113,49 @@
         border-color: #1a237e;
         color: #fff;
     }
+
+    .alert-popup {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #ff4d4d;
+        color: white;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        max-width: 300px;
+        z-index: 1000;
+    }
+    .alert-popup h3 {
+        margin: 0;
+        font-size: 18px;
+    }
+    .alert-popup p {
+        font-size: 14px;
+    }
+    .alert-popup button {
+        background: white;
+        color: #ff4d4d;
+        border: none;
+        padding: 5px 10px;
+        cursor: pointer;
+        margin-top: 10px;
+        border-radius: 5px;
+    } 
+    
+    #travel-suggestions {
+        background: #f4f4f4;
+        padding: 15px;
+        border-radius: 8px;
+        margin-top: 20px;
+    }
+    #travel-suggestions h3 {
+        color: #007bff;
+    }
+    
     </style>
 </head>
-<body onload="getLocation(); updateTime(); setInterval(updateTime, 1000);">
+<body onload="getLocation(); updateTime(); setInterval(updateTime, 1000); fetchWeatherAlerts();">
     <!-- Navigation Bar -->
     <nav class="navbar navbar-expand-lg navbar-light">
         <div class="container">
@@ -119,6 +172,11 @@
                         <li class="nav-item">
                             <a class="nav-link" href="/add-favorite-city/"><i class="fas fa-plus"></i> Add City</a>
                         </li>
+                        <li class="nav-item">
+                            <a href="#" id="speak-weather" class="nav-link">
+                                🔊 Hear Weather Report
+                            </a>
+                        </li>                        
                         <li class="nav-item">
                             <a class="nav-link" href="/logout/"><i class="fas fa-sign-out-alt"></i> Logout</a>
                         </li>
@@ -228,6 +286,12 @@
                 </div>
             </div>
 
+            <!-- Travel -->
+            <div id="travel-suggestions">
+                <p>Loading best travel days...</p>
+            </div>
+            <script>fetchTravelRecommendations();</script>
+            
             <!-- Map -->
             <div id="map"></div>
         {% else %}
@@ -429,6 +493,98 @@
         const seconds = now.getSeconds().toString().padStart(2, '0');
         document.getElementById('current-time').textContent = `${hours}:${minutes}:${seconds}`;
     }
+
+    function fetchWeatherAlerts() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((position) => {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+    
+                fetch(`/get-weather-alerts/?lat=${lat}&lon=${lon}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.alerts) {
+                            showAlertPopup(data.alerts);
+                        } else {
+                            console.log("No extreme weather alerts.");
+                        }
+                    })
+                    .catch(error => console.error("Error fetching alerts:", error));
+            });
+        } else {
+            console.error("Geolocation is not supported by this browser.");
+        }
+    }
+    
+    function showAlertPopup(alerts) {
+        let alertMessage = alerts.map(alert => `<p><strong>${alert.event}:</strong> ${alert.description}</p>`).join("");
+        
+        const alertDiv = document.createElement("div");
+        alertDiv.innerHTML = `
+            <div class="alert-popup">
+                <h3>⚠️ Extreme Weather Alert</h3>
+                ${alertMessage}
+                <button onclick="this.parentElement.remove()">Dismiss</button>
+            </div>
+        `;
+        document.body.appendChild(alertDiv);
+    }  
+    
+    function fetchTravelRecommendations() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((position) => {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+    
+                fetch(`/get-travel-recommendations/?lat=${lat}&lon=${lon}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.recommendations.length > 0) {
+                            displayTravelRecommendations(data.recommendations);
+                        } else {
+                            document.getElementById("travel-suggestions").innerHTML = "No ideal travel days found.";
+                        }
+                    })
+                    .catch(error => console.error("Error fetching travel recommendations:", error));
+            });
+        } else {
+            console.error("Geolocation is not supported by this browser.");
+        }
+    }
+    
+    function displayTravelRecommendations(recommendations) {
+        let travelHTML = `<h3>✈️ Best Travel Days:</h3><ul>`;
+        recommendations.forEach(day => {
+            const date = new Date(day.date * 1000).toDateString();
+            travelHTML += `<li>${date}: ${day.temp}°C, ${day.condition}</li>`;
+        });
+        travelHTML += "</ul>";
+    
+        document.getElementById("travel-suggestions").innerHTML = travelHTML;
+    }
+    
+    function speakWeather() {
+        let weatherText = document.getElementById("weather-report").innerText;
+    
+        if ('speechSynthesis' in window) {
+            let speech = new SpeechSynthesisUtterance(weatherText);
+            speech.lang = "en-US";  // Set language
+            speech.rate = 1.0;  // Speed of speech
+            speech.pitch = 1.0;  // Pitch of voice
+            window.speechSynthesis.speak(speech);
+        } else {
+            alert("Text-to-Speech is not supported in this browser.");
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        document.getElementById("speak-weather").addEventListener("click", function(event) {
+            event.preventDefault(); // Prevent the page from refreshing
+            speakWeather();
+        });
+    });
+    
+    
 </script>
 </body>
 </html>
