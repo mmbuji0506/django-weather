@@ -560,10 +560,26 @@
     
         document.getElementById("travel-suggestions").innerHTML = travelHTML;
     }
+
+
+    document.addEventListener("DOMContentLoaded", function() {
+        document.getElementById("speak-weather").addEventListener("click", function(event) {
+            event.preventDefault(); // Prevent the page from refreshing
+            speakWeather();
+        });
+    });
     
     function speakWeather() {
-        let weatherText = document.getElementById("weather-report").innerText;
+        let city = document.getElementById("city-name").innerText; // Gets the city name from your webpage
+        let temperature = document.getElementById("temperature").innerText; // Gets the temperature
+        let description = document.getElementById("weather-description").innerText; // Gets the weather condition
+        let wind_speed = document.getElementById("wind-speed").innerText; // Gets the wind speed
     
+        let weatherText = `The current weather in ${city} is ${temperature} degrees with ${description}. 
+                            The wind speed is ${wind_speed} meters per second.`;
+        
+        let speech = new SpeechSynthesisUtterance(weatherText);
+
         if ('speechSynthesis' in window) {
             let speech = new SpeechSynthesisUtterance(weatherText);
             speech.lang = "en-US";  // Set language
@@ -575,13 +591,6 @@
             alert("Text-to-Speech is not supported in this browser.");
         }
     }
-
-    document.addEventListener("DOMContentLoaded", function() {
-        document.getElementById("speak-weather").addEventListener("click", function(event) {
-            event.preventDefault(); // Prevent the page from refreshing
-            speakWeather();
-        });
-    });
     
     
 </script>
