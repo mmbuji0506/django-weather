@@ -204,6 +204,7 @@
                 speech.lang = "en-US";  // Set language
                 speech.rate = 1.0;  // Speed of speech
                 speech.pitch = 1.0;  // Pitch of voice
+                speech.voice = window.speechSynthesis.getVoices()[2];  // Select a different voice
                 window.speechSynthesis.speak(speech);
             } else {
                 alert("Text-to-Speech is not supported in this browser.");
