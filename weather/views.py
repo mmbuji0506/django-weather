@@ -127,6 +127,7 @@ def register_view(request):
         form = UserCreationForm()
     return render(request, 'weather/register.html', {'form': form})
 
+@login_required
 def get_weather_alerts(request):
     lat = request.GET.get('lat')
     lon = request.GET.get('lon')
@@ -143,6 +144,7 @@ def get_weather_alerts(request):
     
     return JsonResponse({"message": "No extreme weather alerts."})
 
+@login_required
 def get_travel_recommendations(request):
     lat = request.GET.get('lat')
     lon = request.GET.get('lon')
