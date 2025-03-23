@@ -3,84 +3,154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register</title>
+    <title>Register - Weather Dashboard</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
+    <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Google Fonts (Poppins) -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <!-- Custom CSS -->
     <style>
+        :root {
+            --bg-color: linear-gradient(135deg, #6a11cb, #2575fc);
+            --text-color: #fff;
+            --navbar-bg: rgba(255, 255, 255, 0.9);
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --card-text: #333;
+            --footer-bg: rgba(0, 0, 0, 0.2);
+            --accent-color: #2575fc;
+            --btn-gradient: linear-gradient(135deg, #3498db, #8e44ad);
+            --shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        .dark-mode {
+            --bg-color: linear-gradient(135deg, #2d2d2d, #1a1a1a);
+            --text-color: #e0e0e0;
+            --navbar-bg: rgba(0, 0, 0, 0.9);
+            --card-bg: rgba(0, 0, 0, 0.8);
+            --card-text: #fff;
+            --footer-bg: rgba(255, 255, 255, 0.1);
+            --accent-color: #e94560;
+            --btn-gradient: linear-gradient(135deg, #e94560, #533483);
+            --shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
         body {
-            background: linear-gradient(135deg, #6a11cb, #2575fc);
-            color: #fff;
+            background: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Poppins', sans-serif;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            transition: all 0.3s ease;
+            transition: var(--transition);
         }
+
         .navbar {
-            background: rgba(255, 255, 255, 0.9);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            background: var(--navbar-bg);
+            box-shadow: var(--shadow);
+            padding: 1rem 2rem;
         }
-        .navbar-brand, .nav-link {
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
             color: #333 !important;
         }
-        .nav-link:hover {
-            color: #2575fc !important;
+
+        .dark-mode .navbar-brand {
+            color: #fff !important;
         }
+
+        .nav-link {
+            color: #333 !important;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .dark-mode .nav-link {
+            color: #fff !important;
+        }
+
+        .nav-link:hover {
+            color: var(--accent-color) !important;
+        }
+
+        .btn-link.nav-link {
+            color: #333 !important;
+        }
+
+        .dark-mode .btn-link.nav-link {
+            color: #fff !important;
+        }
+
         .card {
             border: none;
             border-radius: 15px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            background: rgba(255, 255, 255, 0.95);
-            color: #333;
-            margin-top: 2rem;
+            box-shadow: var(--shadow);
+            background: var(--card-bg);
+            color: var(--card-text);
+            transition: var(--transition);
         }
+
         footer {
             margin-top: auto;
-            padding: 20px 0;
+            padding: 1.5rem;
             text-align: center;
-            background: rgba(0, 0, 0, 0.2);
-            color: #fff;
+            background: var(--footer-bg);
+            color: var(--text-color);
+            border-radius: 15px 15px 0 0;
         }
+
         footer a {
-            color: #fff;
+            color: var(--accent-color);
             text-decoration: none;
+            font-weight: 600;
         }
+
         footer a:hover {
             color: #ffdd57;
         }
 
-        /* Dark mode overrides */
-        .dark-mode {
-            background: linear-gradient(135deg, #2d2d2d, #1a1a1a);
+        .form-control {
+            border-radius: 10px;
+            padding: 0.75rem;
+            background: #fff;
+            color: #333;
+            transition: var(--transition);
         }
-        .dark-mode .navbar {
-            background: rgba(0, 0, 0, 0.9) !important;
-        }
-        .dark-mode .navbar-brand,
-        .dark-mode .nav-link {
-            color: #fff !important;
-        }
-        .dark-mode .nav-link:hover {
-            color: #6a11cb !important;
-        }
-        .dark-mode .card {
-            background: rgba(0, 0, 0, 0.8);
-            color: #fff;
-        }
+
         .dark-mode .form-control {
-            background-color: #333;
+            background: #333;
             color: #fff;
             border-color: #444;
         }
-        .dark-mode .password-strength,
-        .dark-mode .password-match {
-            color: #ddd !important;
+
+        .form-control:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+            outline: none;
         }
+
+        .btn-primary {
+            background: var(--btn-gradient);
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
         .password-container {
             position: relative;
         }
+
         .toggle-password {
             position: absolute;
             right: 10px;
@@ -88,23 +158,50 @@
             transform: translateY(-50%);
             cursor: pointer;
             z-index: 2;
+            color: #666;
         }
-        .password-strength {
-            font-size: 0.875rem;
-            margin-top: 0.25rem;
+
+        .dark-mode .toggle-password {
+            color: #ccc;
         }
+
+        .password-strength,
         .password-match {
             font-size: 0.875rem;
             margin-top: 0.25rem;
+            font-weight: 500;
         }
-        .dark-mode footer {
-            background: rgba(255, 255, 255, 0.1);
+
+        .dark-mode .password-strength,
+        .dark-mode .password-match {
+            color: #ddd !important;
+        }
+
+        .dark-mode a {
+            color: var(--accent-color);
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 576px) {
+            .navbar-brand {
+                font-size: 1.2rem;
+            }
+            .nav-link {
+                font-size: 0.9rem;
+            }
+            .btn-primary {
+                width: 100%;
+            }
         }
     </style>
 </head>
 <body>
     <!-- Navigation Bar -->
-    <nav class="navbar navbar-expand-lg navbar-light">
+    <nav class="navbar navbar-expand-lg">
         <div class="container">
             <a class="navbar-brand" href="/">Weather</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -132,40 +229,39 @@
         </div>
     </nav>
 
-    <div class="container flex-grow-1">
+    <div class="container py-5 flex-grow-1">
         <div class="row justify-content-center align-items-center h-100">
-            <div class="col-md-6">
-                <div class="card shadow-lg">
+            <div class="col-md-6 col-lg-5">
+                <div class="card shadow-lg" style="animation: fadeInUp 0.5s ease-in-out;">
                     <div class="card-body">
                         <h2 class="card-title text-center mb-4"><i class="fas fa-user-plus"></i> Register</h2>
                         {% if error %}
-                            <div class="alert alert-danger text-center">{{ error }}</div>
+                            <div class="alert alert-danger text-center" role="alert">{{ error }}</div>
                         {% endif %}
                         <form method="post">
                             {% csrf_token %}
                             <div class="form-group mb-3">
-                                <label for="username"><i class="fas fa-user"></i> Username</label>
-                                <input type="text" name="username" class="form-control" required>
+                                <label for="username" class="form-label fw-semibold"><i class="fas fa-user"></i> Username</label>
+                                <input type="text" name="username" id="username" class="form-control" required>
                             </div>
                             <div class="form-group mb-3 password-container">
-                                <label for="password1"><i class="fas fa-lock"></i> Password</label>
+                                <label for="password1" class="form-label fw-semibold"><i class="fas fa-lock"></i> Password</label>
                                 <input type="password" name="password1" id="password1" class="form-control" required>
                                 <span class="toggle-password" onclick="togglePassword('password1')">👁️</span>
                                 <div id="password-strength" class="password-strength"></div>
                             </div>
                             <div class="form-group mb-3 password-container">
-                                <label for="password2"><i class="fas fa-lock"></i> Confirm Password</label>
+                                <label for="password2" class="form-label fw-semibold"><i class="fas fa-lock"></i> Confirm Password</label>
                                 <input type="password" name="password2" id="password2" class="form-control" required>
                                 <span class="toggle-password" onclick="togglePassword('password2')">👁️</span>
                                 <div id="password-match" class="password-match"></div>
                             </div>
-                            
                             <button type="submit" class="btn btn-primary w-100">
                                 <i class="fas fa-user-plus"></i> Register
                             </button>
                         </form>
                         <div class="text-center mt-3">
-                            <p>Already have an account? <a href="/login/">Login</a></p>
+                            <p>Already have an account? <a href="/login/" style="color: var(--accent-color); text-decoration: none; font-weight: 600;">Login</a></p>
                         </div>
                     </div>
                 </div>
@@ -173,43 +269,43 @@
         </div>
     </div>
 
-     <!-- Footer -->
-     <footer>
-        <p class="mb-0">Crafted with ❤️ by <a href="https://github.com/" target="_blank">JOSAM ENEZA MMBUJI</a></p>
+    <!-- Footer -->
+    <footer>
+        <p class="mb-0">Crafted with ❤️ by <a href="https://github.com/" target="_blank">Josam Eneza Mmbuji</a></p>
     </footer>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Dark Mode, Password Toggle, and Password Strength Script -->
     <script>
-        // Dark Mode Toggle
         function toggleDarkMode() {
             const body = document.body;
             body.classList.toggle('dark-mode');
             const isDarkMode = body.classList.contains('dark-mode');
             localStorage.setItem('darkMode', isDarkMode);
-            
+
             const icon = document.getElementById('theme-icon');
             const text = document.getElementById('theme-text');
             if (isDarkMode) {
                 icon.classList.replace('fa-moon', 'fa-sun');
-                text.textContent = ' Light Mode';
+                text.textContent = 'Light Mode';
             } else {
                 icon.classList.replace('fa-sun', 'fa-moon');
-                text.textContent = ' Dark Mode';
+                text.textContent = 'Dark Mode';
             }
         }
 
-        // Initialize theme
-        document.addEventListener('DOMContentLoaded', () => {
+        // Initialize theme on load
+        document.addEventListener('DOMContentLoaded', function() {
             const isDarkMode = localStorage.getItem('darkMode') === 'true';
             if (isDarkMode) {
                 document.body.classList.add('dark-mode');
                 document.getElementById('theme-icon').classList.replace('fa-moon', 'fa-sun');
-                document.getElementById('theme-text').textContent = ' Light Mode';
+                document.getElementById('theme-text').textContent = 'Light Mode';
             }
         });
 
-        // Updated Password visibility toggle with emojis
+        // Password visibility toggle
         function togglePassword(fieldId) {
             const passwordField = document.getElementById(fieldId);
             const icon = passwordField.nextElementSibling;
@@ -235,7 +331,7 @@
 
             const strengthLabels = ['Very Weak', 'Weak', 'Medium', 'Strong', 'Very Strong'];
             const colors = ['#dc3545', '#ff5722', '#ffc107', '#28a745', '#218838'];
-            
+
             strengthText.textContent = `Strength: ${strengthLabels[strength]}`;
             strengthText.style.color = colors[strength];
         });
@@ -256,6 +352,8 @@
                     matchText.textContent = 'Passwords do not match ✗';
                     matchText.style.color = mismatchColor;
                 }
+            } else {
+                matchText.textContent = '';
             }
         });
     </script>
